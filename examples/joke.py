@@ -1,11 +1,7 @@
 from random import shuffle
 import sys
-from wit import Wit
 
-if len(sys.argv) != 2:
-    print('usage: python ' + sys.argv[0] + ' <wit-token>')
-    exit(1)
-access_token = sys.argv[1]
+from wit import Wit
 
 # Joke example
 # See https://wit.ai/patapizza/example-joke
@@ -24,6 +20,7 @@ all_jokes = {
     ],
 }
 
+
 def first_entity_value(entities, entity):
     if entity not in entities:
         return None
@@ -32,8 +29,10 @@ def first_entity_value(entities, entity):
         return None
     return val['value'] if isinstance(val, dict) else val
 
+
 def send(request, response):
     print(response['text'])
+
 
 def merge(request):
     context = request['context']
@@ -51,6 +50,7 @@ def merge(request):
         del context['ack']
     return context
 
+
 def select_joke(request):
     context = request['context']
 
@@ -59,11 +59,19 @@ def select_joke(request):
     context['joke'] = jokes[0]
     return context
 
+
 actions = {
     'send': send,
     'merge': merge,
     'select-joke': select_joke,
 }
 
-client = Wit(access_token=access_token, actions=actions)
-client.interactive()
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print('usage: python ' + sys.argv[0] + ' <wit-token>')
+        exit(1)
+    else:
+        access_token = sys.argv[1]
+        client = Wit(access_token=access_token, actions=actions)
+        client.interactive()
